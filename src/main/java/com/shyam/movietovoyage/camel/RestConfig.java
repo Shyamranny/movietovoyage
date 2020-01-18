@@ -9,14 +9,18 @@ import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class RestConfig extends RouteBuilder {
 
+    static final String PROPERTY_VIDEO_UUID = "VIDEO_UUID";
+
     @Value("${webservice.api.path}")
-    String contextPath;
+    private String contextPath;
 
     @Value("${server.port}")
-    String serverPort;
+    private String serverPort;
 
     @Override
     public void configure() throws Exception {
@@ -42,12 +46,13 @@ public class RestConfig extends RouteBuilder {
                 .to("direct:remoteService");
 
         from("direct:remoteService")
+                .setProperty(PROPERTY_VIDEO_UUID, simple(UUID.randomUUID().toString()))
                 .wireTap("seda:video-extract-request")
                 .routeId("direct-route")
                 .log(">>> ${body.videoUrl}")
                 .log(">>> ${body.pushUrl}")
                 .log(">>> ${body.frameDurationInSecond}")
-                .setBody().simple("DONE")
+                .setBody(simple("${exchangeProperty.VIDEO_UUID}"))
                 .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(200));
 
     }

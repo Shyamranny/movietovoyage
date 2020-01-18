@@ -1,5 +1,6 @@
 package com.shyam.movietovoyage.extractor;
 
+import com.shyam.movietovoyage.core.VideoImage;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
@@ -21,39 +22,37 @@ public class ImageExtractor {
         this.frameDuration = frameDuration + ONE_MICRO_SECOND;
     }
 
-    public List<BufferedImage> extract() throws Exception{
+    public List<VideoImage> extract() throws Exception{
 
-        List<BufferedImage> list = new ArrayList<>();
+        List<VideoImage> list = new ArrayList<>();
 
-        try(FFmpegFrameGrabber g = new FFmpegFrameGrabber(videoFile)) {
+        FFmpegFrameGrabber g = new FFmpegFrameGrabber(videoFile);
 
-            g.start();
+        g.start();
 
-            long timestamp = frameDuration;
+        long timestamp = frameDuration;
 
-            while (true) {
+        while (true) {
 
-                g.setTimestamp(timestamp);
-                Frame frame = g.grabImage();
-                BufferedImage image = new Java2DFrameConverter().convert(frame);
-                if (null == image) {
-                    break;
-                }
-                list.add(image);
-
-                timestamp += frameDuration;
-
-                if (timestamp < g.getLengthInTime() / ONE_MICRO_SECOND) {
-                    break;
-                }
+            g.setTimestamp(timestamp);
+            Frame frame = g.grabImage();
+            BufferedImage image = new Java2DFrameConverter().convert(frame);
+            if (null == image) {
+                break;
             }
 
-            g.stop();
+            VideoImage videoImage = new VideoImage(timestamp, image);
+            list.add(videoImage);
 
+            timestamp += frameDuration;
 
-        } catch (FrameGrabber.Exception e) {
-            throw e;
+            if (timestamp < g.getLengthInTime() / ONE_MICRO_SECOND) {
+                break;
+            }
         }
+
+        g.stop();
+
 
         return list;
 

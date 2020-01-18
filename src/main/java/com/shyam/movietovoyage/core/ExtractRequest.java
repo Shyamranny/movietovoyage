@@ -29,4 +29,13 @@ public class ExtractRequest {
     public void setFrameDurationInSecond(int frameDurationInSecond) {
         this.frameDurationInSecond = frameDurationInSecond;
     }
+
+    @Override
+    public String toString() {
+        return "ExtractRequest{" +
+                "videoUrl='" + videoUrl + '\'' +
+                ", pushUrl='" + pushUrl + '\'' +
+                ", frameDurationInSecond=" + frameDurationInSecond +
+                '}';
+    }
 }

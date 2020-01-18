@@ -20,3 +20,7 @@ webservice:
 spring:
    main:
      allow-bean-definition-overriding: true
+imageExtractor:
+  extractedImageFolder: /Users/shyam/Documents/temp/movievoyage/extracted-images
+prediction:
+  command: /Users/shyam/Documents/work/ML-model/LocationNet/python-location-net/predict.py
