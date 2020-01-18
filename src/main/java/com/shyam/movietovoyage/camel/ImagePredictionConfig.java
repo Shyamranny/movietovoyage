@@ -33,7 +33,7 @@ public class ImagePredictionConfig extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        from("file://" + extractedImageFolder + "?delay=10000&recursive=true&delete=true&moveFailed=../errors")
+        from("file://" + extractedImageFolder + "?delay=10000&recursive=true&delete=false&moveFailed=../../errors&move=../../processed")
                 .process(exchange -> {
 
                     File file = exchange.getIn().getBody(File.class);
@@ -72,17 +72,14 @@ public class ImagePredictionConfig extends RouteBuilder {
                         PredictionResponse predictionResponse = new PredictionResponse(
                                 predictionResults,
                                 metadata[0],
-                                Long.parseLong(metadata[2].replace(".png", ""))
+                                Long.parseLong(metadata[2].replace(".png", "")),
+                                        file.getName()
                         );
-
-//                        byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
-//                        byte[] encoded = Base64.encodeBase64(bytes);
-//                        String base64Image = new String(encoded, StandardCharsets.US_ASCII);
-//                        predictionResponse.setBase64Image(base64Image);
 
                         exchange.getIn().setBody(predictionResponse);
                     } else {
-                        exchange.getIn().setBody(null);
+                        LOGGER.warn("Stopping route because there are no predictions!!");
+                        exchange.getContext().stop();
                     }
 
                 })

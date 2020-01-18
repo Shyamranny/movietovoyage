@@ -7,12 +7,13 @@ public class PredictionResponse {
     private List<PredictionResult> predictionResults;
     private String videoUuid;
     private long timestamp;
-    private String base64Image;
+    private String fileName;
 
-    public PredictionResponse(List<PredictionResult> predictionResults, String videoUuid, long timestamp) {
+    public PredictionResponse(List<PredictionResult> predictionResults, String videoUuid, long timestamp, String fileName) {
         this.predictionResults = predictionResults;
         this.videoUuid = videoUuid;
         this.timestamp = timestamp;
+        this.fileName = fileName;
     }
 
     public List<PredictionResult> getPredictionResults() {
@@ -27,14 +28,6 @@ public class PredictionResponse {
         return timestamp;
     }
 
-    public String getBase64Image() {
-        return base64Image;
-    }
-
-    public void setBase64Image(String base64Image) {
-        this.base64Image = base64Image;
-    }
-
     public void setPredictionResults(List<PredictionResult> predictionResults) {
         this.predictionResults = predictionResults;
     }
@@ -45,6 +38,14 @@ public class PredictionResponse {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     @Override

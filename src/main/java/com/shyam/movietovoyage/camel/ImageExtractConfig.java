@@ -61,9 +61,10 @@ public class ImageExtractConfig extends RouteBuilder {
 
             File file = new File(new File(extractedImageFolder), videoUuid);
             if (!file.exists()){
-                if(file.mkdir()){
+                if(!file.mkdir()){
                     LOGGER.error("Unable to create folder:" + file.getPath());
-                    return;
+                    LOGGER.warn("Stopping route because unable to create folder!!");
+                    exchange.getContext().stop();
                 }
             }
 

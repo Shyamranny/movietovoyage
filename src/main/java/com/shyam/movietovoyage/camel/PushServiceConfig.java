@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.shyam.movietovoyage.core.Database;
 import com.shyam.movietovoyage.core.ExtractRequest;
 import com.shyam.movietovoyage.core.PredictionResponse;
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +31,10 @@ public class PushServiceConfig extends RouteBuilder {
                         }
                     }
                 })
-        .toD("${exchangeProperty.OUT_URL}");
+                .setHeader(Exchange.HTTP_METHOD, simple("POST"))
+                .setHeader(Exchange.CONTENT_TYPE, simple("application/json"))
+                .toD("${exchangeProperty.OUT_URL}")
+                .log("Pushed prediction result to: ${exchangeProperty.OUT_URL}");
 
     }
 }
